@@ -59,10 +59,10 @@ button:focus-visible,
   position: absolute;
   z-index: -1;
   inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.16'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.32'/%3E%3C/svg%3E");
   content: "";
   mix-blend-mode: multiply;
-  opacity: 0.24;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -122,7 +122,7 @@ button:focus-visible,
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   overscroll-behavior-x: contain;
-  touch-action: pan-x;
+  touch-action: auto;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -150,25 +150,32 @@ button:focus-visible,
 }
 
 .quote-content {
-  display: grid;
+  display: flex;
   width: min(74vw, 1120px);
+  height: 100%;
   max-height: 100%;
   min-height: 0;
+  flex-direction: column;
+  justify-content: center;
   justify-items: center;
   text-align: center;
 }
 
 .quote-scroll {
+  display: flex;
   width: 100%;
+  max-height: calc(100% - 72px);
   min-height: 0;
-  max-height: calc(100% - 58px);
+  flex: 0 1 auto;
+  align-items: center;
   overflow-y: auto;
   overscroll-behavior-y: contain;
   scrollbar-width: none;
 }
 
 .quote-slide blockquote {
-  margin: 0;
+  width: 100%;
+  margin: 0 auto;
   font-family: "Songti SC", STSong, "Noto Serif CJK SC", SimSun, serif;
   font-optical-sizing: auto;
   font-weight: 700;
@@ -196,13 +203,17 @@ button:focus-visible,
 }
 
 .quote-slide[data-length="long"] blockquote {
-  font-size: clamp(1.05rem, 1.42vw, 1.48rem);
+  font-size: clamp(0.98rem, 1.15vw, 1.22rem);
   letter-spacing: -0.012em;
-  line-height: 1.56;
+  line-height: 1.52;
+}
+
+.quote-slide[data-length="long"] .quote-scroll {
+  align-items: flex-start;
 }
 
 .quote-slide footer {
-  margin-top: clamp(18px, 3vh, 34px);
+  margin-top: clamp(16px, 2.2vh, 26px);
   font-size: clamp(0.78rem, 1.15vw, 1.05rem);
   font-weight: 500;
   letter-spacing: 0.01em;
@@ -311,7 +322,7 @@ button:focus-visible,
   position: absolute;
   z-index: 20;
   right: clamp(20px, 5vw, 76px);
-  bottom: max(14px, env(safe-area-inset-bottom));
+  bottom: max(clamp(40px, 6vh, 68px), env(safe-area-inset-bottom));
   left: clamp(20px, 5vw, 76px);
   height: clamp(104px, 13vh, 132px);
   pointer-events: none;
@@ -319,7 +330,7 @@ button:focus-visible,
 
 .swipe-hint {
   position: absolute;
-  bottom: clamp(58px, 7vh, 72px);
+  bottom: clamp(74px, 8vh, 86px);
   left: 50%;
   display: grid;
   gap: 5px;
@@ -343,15 +354,14 @@ button:focus-visible,
   right: 0;
   bottom: 0;
   left: 0;
-  height: 54px;
+  height: 72px;
   pointer-events: auto;
 }
 
 .progress-rail__scroller {
   width: 100%;
   height: 100%;
-  overflow-x: auto;
-  overflow-y: visible;
+  overflow: visible;
   scrollbar-width: none;
 }
 
@@ -367,7 +377,7 @@ button:focus-visible,
   position: relative;
   display: grid;
   min-width: 44px;
-  height: 54px;
+  height: 72px;
   padding: 0;
   background: none;
   border: 0;
@@ -376,6 +386,8 @@ button:focus-visible,
 }
 
 .progress-point__tick {
+  position: absolute;
+  bottom: 8px;
   width: 2px;
   height: 18px;
   background: currentColor;
@@ -391,7 +403,7 @@ button:focus-visible,
 
 .progress-point__marker {
   position: absolute;
-  bottom: 43px;
+  bottom: 38px;
   display: grid;
   width: 44px;
   height: 34px;
@@ -415,7 +427,7 @@ button:focus-visible,
 
 .progress-point__endpoint {
   position: absolute;
-  top: 20px;
+  bottom: 9px;
   font-size: 0.88rem;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
@@ -512,7 +524,7 @@ button:focus-visible,
   }
 
   .quote-scroll {
-    max-height: calc(100dvh - 230px);
+    max-height: calc(100% - 56px);
   }
 
   .quote-slide[data-length="long"] .quote-scroll {
@@ -575,6 +587,11 @@ button:focus-visible,
 
   .progress-rail__points {
     width: max-content;
+  }
+
+  .progress-rail__scroller {
+    overflow-x: auto;
+    overflow-y: hidden;
   }
 
   .progress-point__endpoint {

@@ -50,6 +50,16 @@ function isEditableTarget(target: EventTarget | null): boolean {
   );
 }
 
+function canConsumeVerticalWheel(target: EventTarget | null, deltaY: number): boolean {
+  if (!(target instanceof Element)) return false;
+  const scrollRegion = target.closest<HTMLElement>('.quote-scroll');
+  if (!scrollRegion || scrollRegion.scrollHeight <= scrollRegion.clientHeight) return false;
+
+  const atTop = scrollRegion.scrollTop <= 0;
+  const atBottom = scrollRegion.scrollTop + scrollRegion.clientHeight >= scrollRegion.scrollHeight - 1;
+  return deltaY < 0 ? !atTop : !atBottom;
+}
+
 export function QuoteReader() {
   const total = QUOTES.length;
   const [activeIndex, setActiveIndex] = useState(() => parseQuoteHash(window.location.hash, total));
@@ -89,10 +99,12 @@ export function QuoteReader() {
   );
 
   useEffect(() => {
+    const initialIndex = parseQuoteHash(window.location.hash, total);
+    commitIndex(initialIndex);
     const track = trackRef.current;
     if (!track) return;
-    track.scrollTo({ left: activeIndex * track.clientWidth, behavior: 'auto' });
-  }, []); // The initial hash is read once; later navigation uses goTo.
+    track.scrollTo({ left: initialIndex * track.clientWidth, behavior: 'auto' });
+  }, [commitIndex, total]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -143,7 +155,13 @@ export function QuoteReader() {
   };
 
   const handleWheel = (event: ReactWheelEvent<HTMLElement>) => {
-    if (isEditableTarget(event.target) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (
+      isEditableTarget(event.target) ||
+      Math.abs(event.deltaX) > Math.abs(event.deltaY) ||
+      canConsumeVerticalWheel(event.target, event.deltaY)
+    ) {
+      return;
+    }
 
     event.preventDefault();
     if (wheelLockedRef.current) return;

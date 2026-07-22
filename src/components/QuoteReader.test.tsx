@@ -59,4 +59,26 @@ describe('QuoteReader', () => {
     expect(screen.getByText('16 / 18')).toBeVisible();
     expect(screen.getByText(/ありがとうございました/)).toBeVisible();
   });
+
+  it('normalizes an invalid hash to the first public quote URL', () => {
+    window.history.replaceState(null, '', '/#quote-99');
+    render(<QuoteReader />);
+
+    expect(screen.getByText('01 / 18')).toBeVisible();
+    expect(window.location.hash).toBe('#quote-01');
+  });
+
+  it('lets a long quote consume vertical wheel input before changing quotes', () => {
+    render(<QuoteReader />);
+    const longQuote = screen.getByRole('region', { name: '第 01 条长语录全文' });
+    Object.defineProperties(longQuote, {
+      clientHeight: { configurable: true, value: 300 },
+      scrollHeight: { configurable: true, value: 900 },
+      scrollTop: { configurable: true, value: 100, writable: true },
+    });
+
+    fireEvent.wheel(longQuote, { deltaY: 90 });
+
+    expect(screen.getByText('01 / 18')).toBeVisible();
+  });
 });
