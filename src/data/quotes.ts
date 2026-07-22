@@ -7,10 +7,25 @@ export interface Quote {
   readonly length: QuoteLength;
 }
 
+export function getVisualLength(text: string): number {
+  return Array.from(text).reduce((total, character) => {
+    if (/\s/u.test(character)) return total + 0.3;
+    if (/[\u0000-\u00ff]/u.test(character)) return total + 0.56;
+    return total + 1;
+  }, 0);
+}
+
 export function getQuoteLength(text: string): QuoteLength {
-  if (text.length > 260) return 'long';
-  if (text.length > 110) return 'medium';
+  const visualLength = getVisualLength(text);
+  if (visualLength > 180) return 'long';
+  if (visualLength > 64) return 'medium';
   return 'short';
+}
+
+export function getQuoteScale(text: string): number {
+  const visualLength = Math.max(32, getVisualLength(text));
+  const scale = Math.max(0.28, Math.min(1, (32 / visualLength) ** 0.72));
+  return Number(scale.toFixed(3));
 }
 
 function makeQuote(id: string, paragraphs: readonly string[], source: string): Quote {

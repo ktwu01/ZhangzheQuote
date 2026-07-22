@@ -1,4 +1,6 @@
-import type { Quote } from '../data/quotes';
+import type { CSSProperties } from 'react';
+
+import { getQuoteScale, type Quote } from '../data/quotes';
 
 interface QuoteSlideProps {
   readonly quote: Quote;
@@ -6,11 +8,23 @@ interface QuoteSlideProps {
 }
 
 export function QuoteSlide({ quote, active }: QuoteSlideProps) {
+  const scale = getQuoteScale(quote.paragraphs.join(''));
+  const typeStyle = {
+    '--quote-font-min': `${Math.max(0.98, 2.9 * scale).toFixed(3)}rem`,
+    '--quote-font-fluid': `${(5.6 * scale).toFixed(3)}vw`,
+    '--quote-font-max': `${Math.max(1.18, 6 * scale).toFixed(3)}rem`,
+    '--quote-mobile-font-min': `${Math.max(0.92, 2 * scale).toFixed(3)}rem`,
+    '--quote-mobile-font-fluid': `${(10.2 * scale).toFixed(3)}vw`,
+    '--quote-mobile-font-max': `${Math.max(1.05, 3.25 * scale).toFixed(3)}rem`,
+  } as CSSProperties;
+
   return (
     <article
       className="quote-slide"
       id={`quote-${quote.id}`}
       data-length={quote.length}
+      data-scale={scale}
+      style={typeStyle}
       aria-label={`语录 ${quote.id}`}
       aria-hidden={!active}
     >

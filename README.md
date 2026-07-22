@@ -2,6 +2,8 @@
 
 一屏一句、左右滑动的“长者同志经典语录”阅读器。18 条语录不会铺成长列表；每次只阅读一条，前后内容仅在屏幕边缘留下窄幅提示。
 
+在线访问：[koutian.is-a.dev/ZhangzheQuote](https://koutian.is-a.dev/ZhangzheQuote/)
+
 ## 本地运行
 
 ```bash
