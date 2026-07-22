@@ -1,0 +1,636 @@
+:root {
+  color: #130d0b;
+  background: #c72c1c;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  --red: #c72c1c;
+  --ink: #130d0b;
+  --paper: #fff8ef;
+  --control: #4d120d;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --edge-width: clamp(48px, 4.25vw, 72px);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  min-width: 320px;
+}
+
+button {
+  color: inherit;
+  font: inherit;
+}
+
+button:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--paper);
+  outline-offset: 4px;
+}
+
+::selection {
+  color: var(--red);
+  background: var(--ink);
+}
+
+.quote-reader {
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  background: var(--red);
+}
+
+.quote-reader::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.16'/%3E%3C/svg%3E");
+  content: "";
+  mix-blend-mode: multiply;
+  opacity: 0.24;
+  pointer-events: none;
+}
+
+.masthead {
+  position: absolute;
+  z-index: 20;
+  top: clamp(22px, 3vw, 48px);
+  right: clamp(22px, 3vw, 48px);
+  left: clamp(22px, 3vw, 48px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  pointer-events: none;
+}
+
+.masthead h1,
+.counter {
+  margin: 0;
+}
+
+.masthead h1 {
+  max-width: 70vw;
+  font-family: "Songti SC", STSong, "Noto Serif CJK SC", SimSun, serif;
+  font-size: clamp(1.25rem, 1.75vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+}
+
+.counter {
+  flex: none;
+  font-size: clamp(1.15rem, 1.65vw, 1.85rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 520;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+.counter::first-letter {
+  font-weight: 800;
+}
+
+.quote-stage {
+  position: absolute;
+  z-index: 2;
+  inset: clamp(84px, 9vh, 110px) 0 clamp(128px, 15vh, 164px);
+}
+
+.quote-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  cursor: grab;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  -webkit-overflow-scrolling: touch;
+}
+
+.quote-track::-webkit-scrollbar,
+.progress-rail__scroller::-webkit-scrollbar,
+.quote-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.quote-track[data-dragging] {
+  cursor: grabbing;
+  scroll-snap-type: none;
+  user-select: none;
+}
+
+.quote-slide {
+  display: grid;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 2vh max(calc(var(--edge-width) + 64px), 10vw);
+  place-items: center;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.quote-content {
+  display: grid;
+  width: min(74vw, 1120px);
+  max-height: 100%;
+  min-height: 0;
+  justify-items: center;
+  text-align: center;
+}
+
+.quote-scroll {
+  width: 100%;
+  min-height: 0;
+  max-height: calc(100% - 58px);
+  overflow-y: auto;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+
+.quote-slide blockquote {
+  margin: 0;
+  font-family: "Songti SC", STSong, "Noto Serif CJK SC", SimSun, serif;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  text-wrap: pretty;
+}
+
+.quote-slide p {
+  margin: 0;
+}
+
+.quote-slide p + p {
+  margin-top: 0.42em;
+}
+
+.quote-slide[data-length="short"] blockquote {
+  font-size: clamp(2.9rem, 5.6vw, 6rem);
+  letter-spacing: -0.055em;
+  line-height: 1.34;
+}
+
+.quote-slide[data-length="medium"] blockquote {
+  font-size: clamp(2.15rem, 3.85vw, 4.55rem);
+  letter-spacing: -0.045em;
+  line-height: 1.4;
+}
+
+.quote-slide[data-length="long"] blockquote {
+  font-size: clamp(1.05rem, 1.42vw, 1.48rem);
+  letter-spacing: -0.012em;
+  line-height: 1.56;
+}
+
+.quote-slide footer {
+  margin-top: clamp(18px, 3vh, 34px);
+  font-size: clamp(0.78rem, 1.15vw, 1.05rem);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  line-height: 1.55;
+}
+
+.edge-preview {
+  position: absolute;
+  z-index: 7;
+  top: 10%;
+  bottom: 5%;
+  width: var(--edge-width);
+  overflow: hidden;
+  background: rgb(81 18 13 / 36%);
+  box-shadow: inset 0 0 0 1px rgb(19 13 11 / 5%);
+  pointer-events: none;
+}
+
+.edge-preview[data-empty] {
+  opacity: 0.32;
+}
+
+.edge-preview--previous {
+  left: 0;
+}
+
+.edge-preview--next {
+  right: 0;
+}
+
+.edge-preview span {
+  position: absolute;
+  top: 50%;
+  width: min(58vw, 900px);
+  font-family: "Songti SC", STSong, "Noto Serif CJK SC", SimSun, serif;
+  font-size: clamp(4.8rem, 8vw, 9rem);
+  font-weight: 700;
+  line-height: 1.15;
+  opacity: 0.5;
+  transform: translateY(-50%);
+}
+
+.edge-preview--previous span {
+  right: 10px;
+  text-align: right;
+}
+
+.edge-preview--next span {
+  left: 10px;
+  text-align: left;
+}
+
+.pressable {
+  transition: transform 140ms var(--ease-out), opacity 140ms var(--ease-out);
+}
+
+.pressable:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.arrow-button {
+  position: absolute;
+  z-index: 10;
+  top: 50%;
+  display: grid;
+  width: clamp(58px, 5vw, 78px);
+  height: clamp(58px, 5vw, 78px);
+  padding: 0;
+  color: var(--paper);
+  background: var(--control);
+  border: 0;
+  cursor: pointer;
+  place-items: center;
+  transform: translateY(-50%);
+}
+
+.arrow-button:active:not(:disabled) {
+  transform: translateY(-50%) scale(0.97);
+}
+
+.arrow-button:disabled {
+  cursor: default;
+  opacity: 0.24;
+}
+
+.arrow-button--previous {
+  left: calc(var(--edge-width) - 22px);
+}
+
+.arrow-button--next {
+  right: calc(var(--edge-width) - 22px);
+}
+
+.arrow-button svg {
+  width: 42%;
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  stroke-width: 2.4;
+  transition: transform 160ms var(--ease-out);
+}
+
+.reader-footer {
+  position: absolute;
+  z-index: 20;
+  right: clamp(20px, 5vw, 76px);
+  bottom: max(14px, env(safe-area-inset-bottom));
+  left: clamp(20px, 5vw, 76px);
+  height: clamp(104px, 13vh, 132px);
+  pointer-events: none;
+}
+
+.swipe-hint {
+  position: absolute;
+  bottom: clamp(58px, 7vh, 72px);
+  left: 50%;
+  display: grid;
+  gap: 5px;
+  justify-items: center;
+  font-size: 0.76rem;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  transform: translateX(-50%);
+}
+
+.swipe-hint svg {
+  width: 40px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: square;
+  stroke-width: 1.35;
+}
+
+.progress-rail {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 54px;
+  pointer-events: auto;
+}
+
+.progress-rail__scroller {
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: visible;
+  scrollbar-width: none;
+}
+
+.progress-rail__points {
+  display: grid;
+  width: 100%;
+  min-width: 792px;
+  height: 100%;
+  grid-template-columns: repeat(18, minmax(44px, 1fr));
+}
+
+.progress-point {
+  position: relative;
+  display: grid;
+  min-width: 44px;
+  height: 54px;
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  place-items: center;
+}
+
+.progress-point__tick {
+  width: 2px;
+  height: 18px;
+  background: currentColor;
+  opacity: 0.82;
+  transition: transform 160ms var(--ease-out), opacity 160ms var(--ease-out);
+}
+
+.progress-point[aria-current="step"] .progress-point__tick {
+  background: var(--paper);
+  opacity: 1;
+  transform: scaleY(1.28);
+}
+
+.progress-point__marker {
+  position: absolute;
+  bottom: 43px;
+  display: grid;
+  width: 44px;
+  height: 34px;
+  color: var(--paper);
+  background: var(--ink);
+  font-size: 0.78rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  place-items: center;
+}
+
+.progress-point__marker::after {
+  position: absolute;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: var(--ink);
+  content: "";
+  transform: rotate(45deg);
+}
+
+.progress-point__endpoint {
+  position: absolute;
+  top: 20px;
+  font-size: 0.88rem;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.progress-point:first-child .progress-point__endpoint {
+  right: 34px;
+}
+
+.progress-point:last-child .progress-point__endpoint {
+  left: 34px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .arrow-button--previous:hover:not(:disabled) svg {
+    transform: translateX(-3px);
+  }
+
+  .arrow-button--next:hover:not(:disabled) svg {
+    transform: translateX(3px);
+  }
+
+  .progress-point:hover .progress-point__tick {
+    opacity: 1;
+    transform: scaleY(1.18);
+  }
+}
+
+@media (max-width: 720px) {
+  :root {
+    --edge-width: 22px;
+  }
+
+  .masthead {
+    top: max(20px, env(safe-area-inset-top));
+    right: 20px;
+    left: 20px;
+  }
+
+  .masthead h1 {
+    max-width: 68vw;
+    font-size: clamp(1.05rem, 5vw, 1.35rem);
+  }
+
+  .counter {
+    font-size: 1.02rem;
+  }
+
+  .quote-stage {
+    inset: 64px 0 142px;
+  }
+
+  .quote-slide {
+    padding: 10px 30px;
+  }
+
+  .quote-content {
+    width: 100%;
+  }
+
+  .quote-slide[data-length="short"] blockquote {
+    font-size: clamp(2rem, 10.2vw, 3.25rem);
+    line-height: 1.38;
+  }
+
+  .quote-slide[data-length="medium"] blockquote {
+    font-size: clamp(1.45rem, 6.7vw, 2.2rem);
+    line-height: 1.5;
+  }
+
+  .quote-slide[data-length="long"] blockquote {
+    font-size: clamp(0.92rem, 3.9vw, 1.05rem);
+    letter-spacing: 0;
+    line-height: 1.66;
+  }
+
+  .quote-slide footer {
+    margin-top: 16px;
+    padding-inline: 8px;
+    font-size: 0.72rem;
+    line-height: 1.5;
+  }
+
+  .quote-scroll {
+    max-height: calc(100dvh - 230px);
+  }
+
+  .quote-slide[data-length="long"] .quote-scroll {
+    padding: 10px 7px 18px;
+    text-align: left;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0, black 12px, black calc(100% - 18px), transparent 100%);
+    mask-image: linear-gradient(to bottom, transparent 0, black 12px, black calc(100% - 18px), transparent 100%);
+  }
+
+  .edge-preview {
+    top: 5%;
+    bottom: 5%;
+  }
+
+  .edge-preview span {
+    font-size: 4.2rem;
+  }
+
+  .arrow-button {
+    position: fixed;
+    top: auto;
+    bottom: calc(max(78px, env(safe-area-inset-bottom) + 66px));
+    width: 48px;
+    height: 48px;
+    transform: none;
+  }
+
+  .arrow-button:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+
+  .arrow-button--previous {
+    left: 20px;
+  }
+
+  .arrow-button--next {
+    right: 20px;
+  }
+
+  .reader-footer {
+    right: 16px;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: 16px;
+    height: 126px;
+  }
+
+  .swipe-hint {
+    bottom: 76px;
+    font-size: 0.67rem;
+  }
+
+  .swipe-hint svg {
+    width: 32px;
+  }
+
+  .progress-rail {
+    right: 62px;
+    left: 62px;
+  }
+
+  .progress-rail__points {
+    width: max-content;
+  }
+
+  .progress-point__endpoint {
+    display: none;
+  }
+}
+
+@media (max-height: 700px) and (min-width: 721px) {
+  .quote-stage {
+    inset: 72px 0 112px;
+  }
+
+  .reader-footer {
+    height: 96px;
+  }
+
+  .swipe-hint {
+    bottom: 54px;
+  }
+
+  .quote-slide[data-length="long"] blockquote {
+    font-size: 0.98rem;
+    line-height: 1.48;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .edge-preview,
+  .arrow-button {
+    background: var(--control);
+  }
+
+  .quote-reader::before {
+    opacity: 0.1;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .arrow-button,
+  .progress-point__marker {
+    box-shadow: 0 0 0 2px var(--paper);
+  }
+
+  .progress-point__tick,
+  .edge-preview {
+    opacity: 1;
+  }
+}
